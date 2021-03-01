@@ -209,7 +209,7 @@ public class Zip extends CordovaPlugin {
         public JSONObject toJSONObject() throws JSONException {
             return new JSONObject(
                     "{loaded:" + loaded +
-                    ",currentFile:" + currentFile +
+                    ",currentFile: '" + currentFile + "'" +
                     ",total:" + total + "}");
         }
     }
