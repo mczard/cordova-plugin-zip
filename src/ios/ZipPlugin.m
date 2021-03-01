@@ -51,11 +51,12 @@
     }];
 }
 
-- (void)zipArchiveWillUnzipFileAtIndex:(NSInteger)fileIndex totalFiles:(NSInteger)totalFiles archivePath:(NSString *)archivePath fileInfo:(unz_file_info)fileInfo
+- (void)zipArchiveWillUnzipFileAtIndex:(NSInteger)fileIndex totalFiles:(NSInteger)totalFiles archivePath:(NSString *)archivePath fileInfo:(unz_file_info)fileInfo currentFile:(NSString *)currentFile
 {
-    NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:2];
+    NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:3];
     [message setObject:[NSNumber numberWithLongLong:fileIndex] forKey:@"loaded"];
     [message setObject:[NSNumber numberWithLongLong:totalFiles] forKey:@"total"];
+    [message setObject:[(NSString *) currentFile] forKey:@"currentFile"];
     
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
     [pluginResult setKeepCallbackAsBool:YES];

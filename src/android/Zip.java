@@ -84,6 +84,7 @@ public class Zip extends CordovaPlugin {
             OpenForReadResult zipFile = resourceApi.openForRead(zipUri);
             ProgressEvent progress = new ProgressEvent();
             progress.setTotal(zipFile.length);
+            progress.setCurrentFile("");
 
             inputStream = new BufferedInputStream(zipFile.inputStream);
             inputStream.mark(10);
@@ -122,10 +123,13 @@ public class Zip extends CordovaPlugin {
                 String compressedName = ze.getName();
 
                 if (ze.isDirectory()) {
+                   progress.setCurrentFile(outputDirectory + compressedName);
                    File dir = new File(outputDirectory + compressedName);
                    dir.mkdirs();
                 } else {
                     File file = new File(outputDirectory + compressedName);
+
+                    progress.setCurrentFile(outputDirectory + compressedName);
                     file.getParentFile().mkdirs();
                     if(file.exists() || file.createNewFile()){
                         Log.w("Zip", "extracting: " + file.getPath());
@@ -182,6 +186,8 @@ public class Zip extends CordovaPlugin {
     private static class ProgressEvent {
         private long loaded;
         private long total;
+        private String currentFile;
+
         public long getLoaded() {
             return loaded;
         }
@@ -197,9 +203,13 @@ public class Zip extends CordovaPlugin {
         public void setTotal(long total) {
             this.total = total;
         }
+        public void setCurrentFile(String file) {
+            this.currentFile = file;
+        }
         public JSONObject toJSONObject() throws JSONException {
             return new JSONObject(
                     "{loaded:" + loaded +
+                    ",currentFile:" + currentFile +
                     ",total:" + total + "}");
         }
     }

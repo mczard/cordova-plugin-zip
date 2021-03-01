@@ -168,10 +168,6 @@
                     break;
                 }
             }
-            if ([delegate respondsToSelector:@selector(zipArchiveWillUnzipFileAtIndex:totalFiles:archivePath:fileInfo:)]) {
-                [delegate zipArchiveWillUnzipFileAtIndex:currentFileNumber totalFiles:(NSInteger)globalInfo.number_entry
-                                             archivePath:path fileInfo:fileInfo];
-            }
             if ([delegate respondsToSelector:@selector(zipArchiveProgressEvent:total:)]) {
                 [delegate zipArchiveProgressEvent:(NSInteger)currentPosition total:(NSInteger)fileSize];
             }
@@ -207,6 +203,7 @@
             
             // Check if it contains directory
             NSString *strPath = @(filename);
+
             BOOL isDirectory = NO;
             if (filename[fileInfo.size_filename-1] == '/' || filename[fileInfo.size_filename-1] == '\\') {
                 isDirectory = YES;
@@ -219,6 +216,12 @@
             }
             
             NSString *fullPath = [destination stringByAppendingPathComponent:strPath];
+            
+            if ([delegate respondsToSelector:@selector(zipArchiveWillUnzipFileAtIndex:totalFiles:archivePath:fileInfo:currentFile:)]) {
+                [delegate zipArchiveWillUnzipFileAtIndex:currentFileNumber totalFiles:(NSInteger)globalInfo.number_entry
+                                             archivePath:path fileInfo:fileInfo currentFile:fullPath];
+            }
+
             NSError *err = nil;
             NSDate *modDate = [[self class] _dateWithMSDOSFormat:(UInt32)fileInfo.dosDate];
             NSDictionary *directoryAttr = @{NSFileCreationDate: modDate, NSFileModificationDate: modDate};
